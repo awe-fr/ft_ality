@@ -1,2 +1,4 @@
 let () = 
-  print_endline "Hello, World!"
+  let _ = Parser.start_parsing "./configs/mk1.cfg" in
+  (* print_endline test; *)
+  ()
