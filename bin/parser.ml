@@ -1,26 +1,5 @@
 exception Wrong_content of string
 
-type key = {
-    key : string;
-    action : string
-}
-
-type move = {
-	name : string;
-	move : string list
-}
-
-type character = {
-    name : string;
-    combo : move list
-}
-
-type config = {
-    key : key list;
-    move : move list;
-    character : character list
-}
-
 let off_space file =
   let index = 0 in
   let rec outside file index = 
@@ -53,33 +32,13 @@ let off_space file =
   in
   outside file index
 
-let print_key (key : key) =
-    let str = (key.key ^ " : " ^ key.action) in
-    print_endline str;
-    ()
-
-let print_move (move : move) =
-    print_string (move.name ^ "  : ");
-    let print_move_stack str =
-        print_string (str ^ ", ");
-    in
-    List.iter print_move_stack move.move;
-    print_endline "";
-    ()
-
-let print_char (character : character) =
-    print_string (character.name ^ "  : ");
-    print_endline ("");
-    List.iter print_move character.combo;
-    ()
-
 let rec key_parse file =
     let line = input_line file in
     let line = off_space line in
     if line <> "END" then
         let splitted = String.split_on_char '=' line in
         let ac = List.nth (String.split_on_char '\"' (List.nth splitted 1)) 1 in
-        let key : key = {key = List.nth splitted 0; action = ac} in
+        let key : Type.key = {key = List.nth splitted 0; action = ac} in
         key :: key_parse file
     else
         []
@@ -100,7 +59,7 @@ let rec basic_move_parse file =
         let name = List.nth namesplitted 1 in
         let lst = String.split_on_char ',' (List.nth splitted 1) in
         let lst = get_lst lst in
-        let move : move = {name = name; move = lst} in
+        let move : Type.move = {name = name; move = lst} in
         move :: basic_move_parse file
     else
         []
@@ -113,7 +72,7 @@ let rec parse_char file =
         let name = List.nth splitted 1 in
         let combo = basic_move_parse file in
         let _ = input_line file in
-        let character : character = {name = name; combo = combo} in
+        let character : Type.character = {name = name; combo = combo} in
         character :: parse_char file
     else
         []
@@ -122,12 +81,11 @@ let move_parse file lst =
     let cat = input_line file |> off_space in
     if cat = "BASIC_MOVES" then
         let move = basic_move_parse file in
-        List.iter print_move move;
         let _ = input_line file in
         let cat2 = input_line file |> off_space in
         if cat2 = "CHARACTER_MOVES" then
             let characters = parse_char file in
-            let config : config = {key = lst; move = move; character = characters} in
+            let config : Type.config = {key = lst; move = move; character = characters} in
             config
         else
             raise (Wrong_content "Wrong categories")
@@ -139,7 +97,6 @@ let start_parsing path =
     let cat = input_line file |> off_space in
     if cat = "KEY_MAPPING" then
         let lst = key_parse file in
-        List.iter print_key lst;
         let _ = input_line file in
         let cat2 = input_line file |> off_space in
         if cat2 = "MOVE_LIST" then
