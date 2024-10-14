@@ -4,7 +4,7 @@ DUNE = opam exec -- dune
 
 TARGET = _build/default/bin/main.exe
 
-INIT = opam init -y && opam install dune -y
+INIT = opam init -y && opam install dune -y && opam install tsdl -y
 
 $(TARGET):
 	$(DUNE) build
