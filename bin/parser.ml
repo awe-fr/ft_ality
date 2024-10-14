@@ -10,6 +10,17 @@ type move = {
 	move : string list
 }
 
+type character = {
+    name : string;
+    combo : move list
+}
+
+type config = {
+    key : key list;
+    move : move list;
+    character : character list
+}
+
 let off_space file =
   let index = 0 in
   let rec outside file index = 
@@ -56,6 +67,12 @@ let print_move (move : move) =
     print_endline "";
     ()
 
+let print_char (character : character) =
+    print_string (character.name ^ "  : ");
+    print_endline ("");
+    List.iter print_move character.combo;
+    ()
+
 let rec key_parse file =
     let line = input_line file in
     let line = off_space line in
@@ -88,14 +105,32 @@ let rec basic_move_parse file =
     else
         []
 
-let move_parse file =
+let rec parse_char file =
+    let line = input_line file in
+    let line = off_space line in
+    if line <> "END" then
+        let splitted = String.split_on_char '"' line in
+        let name = List.nth splitted 1 in
+        let combo = basic_move_parse file in
+        let _ = input_line file in
+        let character : character = {name = name; combo = combo} in
+        character :: parse_char file
+    else
+        []
+
+let move_parse file lst =
     let cat = input_line file |> off_space in
     if cat = "BASIC_MOVES" then
         let move = basic_move_parse file in
         List.iter print_move move;
-        ()
-    else if cat = "CHARACTER_MOVES" then
-        ()
+        let _ = input_line file in
+        let cat2 = input_line file |> off_space in
+        if cat2 = "CHARACTER_MOVES" then
+            let characters = parse_char file in
+            let config : config = {key = lst; move = move; character = characters} in
+            config
+        else
+            raise (Wrong_content "Wrong categories")
     else
         raise (Wrong_content "Wrong categories")
 
@@ -108,12 +143,9 @@ let start_parsing path =
         let _ = input_line file in
         let cat2 = input_line file |> off_space in
         if cat2 = "MOVE_LIST" then
-            let _ = move_parse file in
-            ()
+            let conf = move_parse file lst in
+            conf
         else
-            ()
-    else if cat = "MOVE_LIST" then
-        (* let _ = move_parse file in *)
-        ()
+            raise (Wrong_content "Wrong categories")
     else
         raise (Wrong_content "Wrong categories")
