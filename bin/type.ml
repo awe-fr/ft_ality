@@ -25,7 +25,7 @@ let print_key (key : key) =
   ()
 
 let print_move (move : move) =
-  print_string (move.name ^ "  : ");
+  print_string ("[" ^ move.name ^ "] : ");
   let print_move_stack str =
       print_string (str ^ ", ");
   in
@@ -34,7 +34,15 @@ let print_move (move : move) =
   ()
 
 let print_char (character : character) =
-  print_string (character.name ^ "  : ");
-  print_endline ("");
+  print_endline (character.name);
+  print_endline ("-------------------------");
   List.iter print_move character.combo;
   ()
+
+let print_character (character : character list) =
+  let rec print_char_stack (character : character list) num =
+    match character with
+    | [] -> ()
+    | x :: xs -> print_endline ((string_of_int num) ^ " : " ^ x.name); print_char_stack xs (num + 1)
+  in
+  print_char_stack character 1;
