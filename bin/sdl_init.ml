@@ -1,12 +1,13 @@
 exception Wrong_number of string
 
-let selected_char (character : Type.character list) (key : Type.key list) num =
+let selected_char (character : Type.character list) (key : Type.key list) (move : Type.move list) num =
   try
     let car = List.nth character num in
     print_endline ("");
     print_string ("You have selected ");
     Type.print_char car;
-    Type.print_key key; 
+    Type.print_key key;
+    Automaton.start_automaton key car move;
     ()
   with _ ->
     raise (Wrong_number ((string_of_int (num + 1)) ^ " is not affialied to any character"))
@@ -25,7 +26,7 @@ let rec select_character (config : Type.config) =
       if num = 0 then
         raise (Wrong_number "Cannot select 0")
       else
-        selected_char config.character config.key (num - 1)
+        selected_char config.character config.key config.move (num - 1)
   | _ -> select_character config;
   ()
 
