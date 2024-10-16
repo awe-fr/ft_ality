@@ -1,17 +1,15 @@
 exception Wrong_number of string
 
-
-let selected_char (character : Type.character list) num =
+let selected_char (character : Type.character list) (key : Type.key list) num =
   try
     let car = List.nth character num in
     print_endline ("");
     print_string ("You have selected ");
     Type.print_char car;
+    Type.print_key key; 
     ()
   with _ ->
     raise (Wrong_number ((string_of_int (num + 1)) ^ " is not affialied to any character"))
-
-
 
 let rec select_character (config : Type.config) =
   let event = Tsdl.Sdl.Event.create () in
@@ -27,15 +25,9 @@ let rec select_character (config : Type.config) =
       if num = 0 then
         raise (Wrong_number "Cannot select 0")
       else
-        selected_char config.character (num - 1)
+        selected_char config.character config.key (num - 1)
   | _ -> select_character config;
   ()
-
-
-
-
-
-
 
 let init (config : Type.config) =
   match Tsdl.Sdl.init Tsdl.Sdl.Init.video with

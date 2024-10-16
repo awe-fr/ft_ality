@@ -19,9 +19,13 @@ type config = {
     character : character list
 }
 
-let print_key (key : key) =
-  let str = (key.key ^ " : " ^ key.action) in
-  print_endline str;
+let print_key (key : key list) =
+  let print_key_stack (key : key) =
+    let str = (key.key ^ " : " ^ key.action) in
+    print_endline (str)
+  in
+  print_endline ("-------------key-------------");
+  List.iter print_key_stack key;
   ()
 
 let print_move (move : move) =
@@ -35,7 +39,7 @@ let print_move (move : move) =
 
 let print_char (character : character) =
   print_endline (character.name);
-  print_endline ("-------------------------");
+  print_endline ("------------Combo------------");
   List.iter print_move character.combo;
   ()
 
