@@ -82,7 +82,6 @@ let rec wait_for_input (state : state) =
       wait_for_input state;
       ()
   | _ ->
-    (* print_endline (state.state); *)
     wait_for_input state
 
 let start_automaton (key : Type.key list) (character : Type.character) (move : Type.move list) =

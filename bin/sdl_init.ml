@@ -6,7 +6,9 @@ let selected_char (character : Type.character list) (key : Type.key list) (move 
     print_endline ("");
     print_string ("You have selected ");
     Type.print_char car;
+    Type.print_move_list move;
     Type.print_key key;
+    (* print les combo classique et preciser les combos special *)
     Automaton.start_automaton key car move;
     ()
   with _ ->

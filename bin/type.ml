@@ -28,6 +28,20 @@ let print_key (key : key list) =
   List.iter print_key_stack key;
   ()
 
+let print_move_list (move : move list) =
+  let print_move_list_func (move : move)=
+    print_string ("[" ^ move.name ^ "] : ");
+    let print_move_stack str =
+        print_string (str ^ ", ");
+    in
+    List.iter print_move_stack move.move;
+    print_endline "";
+    ()
+  in
+  print_endline ("------------Combo------------");
+  List.iter print_move_list_func move ;
+  ()
+
 let print_move (move : move) =
   print_string ("[" ^ move.name ^ "] : ");
   let print_move_stack str =
@@ -39,7 +53,7 @@ let print_move (move : move) =
 
 let print_char (character : character) =
   print_endline (character.name);
-  print_endline ("------------Combo------------");
+  print_endline ("--------Special Combo--------");
   List.iter print_move character.combo;
   ()
 
