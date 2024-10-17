@@ -49,4 +49,15 @@ let print_character (character : character list) =
     | [] -> ()
     | x :: xs -> print_endline ((string_of_int num) ^ " : " ^ x.name); print_char_stack xs (num + 1)
   in
-  print_char_stack character 1;
+  print_char_stack character 1
+
+let rec print_assosiate (key : key list) input =
+  match key with
+  | [] -> "none"
+  | x :: xs -> 
+    if x.key = input then begin
+      print_endline (x.action); 
+      x.action 
+    end else begin 
+      print_assosiate xs input
+    end

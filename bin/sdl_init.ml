@@ -27,8 +27,8 @@ let rec select_character (config : Type.config) =
         raise (Wrong_number "Cannot select 0")
       else
         selected_char config.character config.key config.move (num - 1)
-  | _ -> select_character config;
-  ()
+  | _ -> 
+    select_character config
 
 let init (config : Type.config) =
   match Tsdl.Sdl.init Tsdl.Sdl.Init.video with
