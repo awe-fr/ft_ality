@@ -6,9 +6,6 @@ type state = {
   combo_index : int
 }
 
-
-
-
 let potential_combo_calculator (state : state) input =
 
   let is_here input index (combo : Type.move) =
@@ -41,8 +38,6 @@ let potential_combo_calculator (state : state) input =
   else
     []
 
-
-
 let rec combo_complete (combo : Type.move list) state pos =
   match combo with
   | [] -> state
@@ -53,37 +48,28 @@ let rec combo_complete (combo : Type.move list) state pos =
     else
       combo_complete xs state pos
  
-
 let interpreter (state : state) input =
   let new_state = Type.get_assosiate state.key input in
   if new_state <> "none" then begin
     let new_potential_combo = potential_combo_calculator state new_state in
 
     let tp = combo_complete new_potential_combo new_state state.combo_index in
-    print_endline ("top " ^ tp);
+    print_endline (tp);
     List.iter Type.print_move new_potential_combo;
     if state.state = "neutral" && new_potential_combo <> [] then
       let state : state = {state = new_state; full_combos = state.full_combos; key = state.key; potential_combo = new_potential_combo; combo_index = (state.combo_index + 1)} in
-      print_endline ("state : " ^ state.state);
       state
     else if state.state <> "neutral" && new_potential_combo <> [] then
       let state : state = {state = (state.state ^ " " ^ new_state); full_combos = state.full_combos; key = state.key; potential_combo = new_potential_combo; combo_index = (state.combo_index + 1)} in
-      print_endline ("state : " ^ state.state);
       state
     else if new_potential_combo = [] then
       let state : state = {state = "neutral"; full_combos = state.full_combos; key = state.key; potential_combo = state.full_combos; combo_index = 0} in
-      print_endline ("state : " ^ state.state);
       state
     else
       state
   end else begin
     state
   end
-
-
-
-
-
 
 let rec wait_for_input (state : state) =
   let event = Tsdl.Sdl.Event.create () in
