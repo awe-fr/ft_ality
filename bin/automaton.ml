@@ -52,10 +52,8 @@ let interpreter (state : state) input =
   let new_state = Type.get_assosiate state.key input in
   if new_state <> "none" then begin
     let new_potential_combo = potential_combo_calculator state new_state in
-
     let tp = combo_complete new_potential_combo new_state state.combo_index in
     print_endline (tp);
-    List.iter Type.print_move new_potential_combo;
     if state.state = "neutral" && new_potential_combo <> [] then
       let state : state = {state = new_state; full_combos = state.full_combos; key = state.key; potential_combo = new_potential_combo; combo_index = (state.combo_index + 1)} in
       state

@@ -8,6 +8,7 @@ let selected_char (character : Type.character list) (key : Type.key list) (move 
     Type.print_char car;
     Type.print_move_list move;
     Type.print_key key;
+    print_endline ("------------Input------------");
     Automaton.start_automaton key car move;
     ()
   with _ ->
