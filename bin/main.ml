@@ -1,3 +1,5 @@
+(* Just main func *)
+
 let () =
   let ac = Array.length Sys.argv in
   if ac = 2 then

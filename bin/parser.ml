@@ -1,5 +1,7 @@
 exception Wrong_content of string
 
+(* Get rid of space and tab *)
+
 let off_space file =
   let index = 0 in
   let rec outside file index = 
@@ -32,6 +34,8 @@ let off_space file =
   in
   outside file index
 
+(* Parse KEY_MAPPING section *)
+
 let rec key_parse file =
     let line = input_line file in
     let line = off_space line in
@@ -43,11 +47,14 @@ let rec key_parse file =
     else
         []
 
+(* Get the combo list *)
+
 let rec get_lst (lst) =
     match lst with
     | [] -> []
     | x :: xs -> let splitted = String.split_on_char '"' x in let car = List.nth splitted 1 in car :: get_lst xs 
 
+(* BASIC_MOVES parsing *)
 
 let rec basic_move_parse file =
     let line = input_line file in
@@ -64,6 +71,8 @@ let rec basic_move_parse file =
     else
         []
 
+(* Parsing charracter *)
+
 let rec parse_char file =
     let line = input_line file in
     let line = off_space line in
@@ -76,6 +85,8 @@ let rec parse_char file =
         character :: parse_char file
     else
         []
+
+(* Start MOVE_LIST parsing *)
 
 let move_parse file lst =
     let cat = input_line file |> off_space in
@@ -91,6 +102,8 @@ let move_parse file lst =
             raise (Wrong_content "Wrong categories")
     else
         raise (Wrong_content "Wrong categories")
+
+(* Start parsing *)
 
 let start_parsing path =
     let file = open_in path in
