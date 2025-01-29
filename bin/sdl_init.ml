@@ -1,5 +1,7 @@
 exception Wrong_number of string
 
+(* Print character move *)
+
 let selected_char (character : Type.character list) (key : Type.key list) (move : Type.move list) num =
   try
     let car = List.nth character num in
@@ -13,6 +15,8 @@ let selected_char (character : Type.character list) (key : Type.key list) (move 
     ()
   with _ ->
     raise (Wrong_number ((string_of_int (num + 1)) ^ " is not affialied to any character"))
+
+(* Character selection *)
 
 let rec select_character (config : Type.config) =
   let event = Tsdl.Sdl.Event.create () in
@@ -31,6 +35,8 @@ let rec select_character (config : Type.config) =
         selected_char config.character config.key config.move (num - 1)
   | _ -> 
     select_character config
+
+(* Basic init of SDL *)
 
 let init (config : Type.config) =
   match Tsdl.Sdl.init Tsdl.Sdl.Init.video with

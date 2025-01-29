@@ -47,7 +47,9 @@ let rec combo_complete (combo : Type.move list) state pos =
       x.name
     else
       combo_complete xs state pos
- 
+
+(* Gonna interprete the input *)
+
 let interpreter (state : state) input =
   let new_state = Type.get_assosiate state.key input in
   if new_state <> "none" then begin
@@ -69,6 +71,8 @@ let interpreter (state : state) input =
     state
   end
 
+(* Catch input *)
+
 let rec wait_for_input (state : state) =
   let event = Tsdl.Sdl.Event.create () in
   Tsdl.Sdl.wait_event (Some event) |> ignore;
@@ -78,13 +82,23 @@ let rec wait_for_input (state : state) =
   | `Quit ->
       exit 0
   | `Key_down ->
+      let old_state = state in
       let keycode = Tsdl.Sdl.Event.get event Tsdl.Sdl.Event.keyboard_keycode in
       let input = Tsdl.Sdl.get_key_name keycode in
       let state = interpreter state input in
-      wait_for_input state;
-      ()
+      if (!Debug.debug_mode = 1) then begin
+        print_endline (old_state.state ^ ", " ^ input ^ " -> " ^ state.state);
+        print_endline("");
+        wait_for_input state;
+        ()
+      end else begin
+        wait_for_input state;
+        ()
+      end
   | _ ->
     wait_for_input state
+
+(* Start the automaton *)
 
 let start_automaton (key : Type.key list) (character : Type.character) (move : Type.move list) =
   let combos = character.combo @ move in

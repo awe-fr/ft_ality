@@ -61,7 +61,7 @@ let print_character (character : character list) =
   let rec print_char_stack (character : character list) num =
     match character with
     | [] -> ()
-    | x :: xs -> print_endline ((string_of_int num) ^ " : " ^ x.name); print_char_stack xs (num + 1)
+    | x :: xs -> print_endline ("[" ^ (string_of_int num) ^ "] : " ^ x.name); print_char_stack xs (num + 1)
   in
   print_char_stack character 1
 
