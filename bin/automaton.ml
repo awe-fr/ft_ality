@@ -40,7 +40,7 @@ let potential_combo_calculator (state : state) input =
 
 let rec combo_complete (combo : Type.move list) state pos =
   match combo with
-  | [] -> state
+  | [] -> ""
   | x :: xs -> 
     let long = List.length x.move in
     if long = (pos + 1) then
@@ -55,7 +55,8 @@ let interpreter (state : state) input =
   if new_state <> "none" then begin
     let new_potential_combo = potential_combo_calculator state new_state in
     let tp = combo_complete new_potential_combo new_state state.combo_index in
-    print_endline (tp);
+    if tp != "" then
+      print_endline (tp);
     if state.state = "neutral" && new_potential_combo <> [] then
       let state : state = {state = new_state; full_combos = state.full_combos; key = state.key; potential_combo = new_potential_combo; combo_index = (state.combo_index + 1)} in
       state
@@ -86,7 +87,10 @@ let rec wait_for_input (state : state) =
       let keycode = Tsdl.Sdl.Event.get event Tsdl.Sdl.Event.keyboard_keycode in
       let input = Tsdl.Sdl.get_key_name keycode in
       let state = interpreter state input in
-      if (!Debug.debug_mode = 1) then begin
+      if keycode = 27 then begin
+        print_endline ("Thanks for playing !");
+        exit 0
+      end else if (!Debug.debug_mode = 1) then begin
         print_endline (old_state.state ^ ", " ^ input ^ " -> " ^ state.state);
         print_endline("");
         wait_for_input state;
