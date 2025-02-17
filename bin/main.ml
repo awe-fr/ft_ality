@@ -49,9 +49,11 @@ let () =
       with
       | Sdl_init.Wrong_number msg ->
         print_endline ("Error : " ^ msg);
+      | Parser.Wrong_content msg ->
+        print_endline ("Error : " ^ msg);
       | _ ->
         print_endline ("Error");
     else
-      print_endline ("Usage : ./ft_ality config_file")
+      print_endline ("Usage : ./ft_ality [-h] [--help] config_file [-d]")
   else
     ()

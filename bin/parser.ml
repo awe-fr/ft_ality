@@ -43,20 +43,30 @@ let rec key_parse file =
         let splitted = String.split_on_char '=' line in
         let ac = List.nth (String.split_on_char '\"' (List.nth splitted 1)) 1 in
         let key : Type.key = {key = List.nth splitted 0; action = ac} in
-        key :: key_parse file
+        if key.action = "" then
+          raise (Wrong_content "Not closed")
+        else
+          key :: key_parse file
     else
         []
 
+(* Check if the move is in the list *)
+
+let rec check_there name (combo : Type.key list) =
+  match combo with
+  | [] -> false
+  | x :: xs -> if name = x.action then true else check_there name xs
+
 (* Get the combo list *)
 
-let rec get_lst (lst) =
+let rec get_lst lst lste =
     match lst with
     | [] -> []
-    | x :: xs -> let splitted = String.split_on_char '"' x in let car = List.nth splitted 1 in car :: get_lst xs 
+    | x :: xs -> let splitted = String.split_on_char '"' x in let car = List.nth splitted 1 in if check_there car lste = false then raise(Wrong_content "Move not in the list") else car :: get_lst xs lste
 
 (* BASIC_MOVES parsing *)
 
-let rec basic_move_parse file =
+let rec basic_move_parse file lste =
     let line = input_line file in
     let line = off_space line in
     if line <> "END" then
@@ -65,37 +75,43 @@ let rec basic_move_parse file =
         let namesplitted = String.split_on_char '"' name in
         let name = List.nth namesplitted 1 in
         let lst = String.split_on_char ',' (List.nth splitted 1) in
-        let lst = get_lst lst in
+        let lst = get_lst lst lste in
         let move : Type.move = {name = name; move = lst} in
-        move :: basic_move_parse file
+        if move.name = "" then
+          raise (Wrong_content "Not closed")
+        else
+          move :: basic_move_parse file lste
     else
         []
 
 (* Parsing charracter *)
 
-let rec parse_char file =
+let rec parse_char file lst =
     let line = input_line file in
     let line = off_space line in
     if line <> "END" then
         let splitted = String.split_on_char '"' line in
         let name = List.nth splitted 1 in
-        let combo = basic_move_parse file in
+        let combo = basic_move_parse file lst in
         let _ = input_line file in
         let character : Type.character = {name = name; combo = combo} in
-        character :: parse_char file
+        if character.name = "" then
+          raise (Wrong_content "Not closed")
+        else
+          character :: parse_char file lst
     else
         []
 
 (* Start MOVE_LIST parsing *)
 
-let move_parse file lst =
+let move_parse file (lst : Type.key list) =
     let cat = input_line file |> off_space in
     if cat = "BASIC_MOVES" then
-        let move = basic_move_parse file in
+        let move = basic_move_parse file lst in
         let _ = input_line file in
         let cat2 = input_line file |> off_space in
         if cat2 = "CHARACTER_MOVES" then
-            let characters = parse_char file in
+            let characters = parse_char file lst in
             let config : Type.config = {key = lst; move = move; character = characters} in
             config
         else
